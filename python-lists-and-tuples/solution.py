@@ -1,22 +1,23 @@
 L = 'abcdefghijklmnopqrstuvwxyz'
 
-def create_combine_two(input):
+def create_two(input):
   # Create a list of numbers corresponding to the letters
     L1 = []
-    for letter in range(len(input)):
-      L1.append(letter + 1)
+    for j in range(len(input)):
+      L1.append(j + 1)
+    print(L1)
 
   # Create a list of individual letters
     L2 = []
     L2 = [i for i in input]
+    print(L2)
 
-  # Combine the two lists
-    combined_list = []
+create_two(L)
 
-    for l in range(len(input)):
-      combined_list.append((L1[l],L2[l]))
+def combine_two(input):
+  enumerated_letters = enumerate(input, start=1)
+  print(list(enumerated_letters))
 
-    print(combined_list)
+combine_two(L)
 
-create_combine_two(L)
 
