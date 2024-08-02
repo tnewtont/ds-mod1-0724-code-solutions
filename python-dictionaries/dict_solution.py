@@ -2,7 +2,7 @@ def deci_to_bi(n):
   deci_bi_dict = {} # Initiate dictionary
 
   for num in range(n): 
-    bi_value = "" # Initiate binary result (values of dictionary)
+    bi_value = "" # Initiate binary results (values of dictionary)
     temporary = num
 
     while temporary != 0:
