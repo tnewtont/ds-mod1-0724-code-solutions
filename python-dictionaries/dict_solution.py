@@ -1,17 +1,20 @@
-def deci_to_bi(number):
+def deci_to_bi(n):
+  deci_bi_dict = {} # Initiate dictionary
 
-  # List of keys (decimals)
-  deci_list = []
-  for i in range(number):
-    deci_list.append(i)
+  for num in range(n): 
+    bi_value = "" # Initiate binary result (values of dictionary)
+    temporary = num
 
-  # List of values (binaries)
-  bi_list = []
-  for i in range(number):
-    bi_list.append("{:04b}".format(i))
+    while temporary != 0:
+      remainder = temporary % 2
+      bi_value = str(remainder) + bi_value
+      temporary //= 2 # Floor
 
-  # Creates dictionary
-  deci_bi_dict = dict(zip(deci_list, bi_list))
-  print(deci_bi_dict)
+    if len(bi_value) < 4: # If the binary result is less than 4 chars long
+        bi_value = '0'*(4-len(bi_value)) + bi_value
 
-deci_to_bi(16) # 0 to 15
+    deci_bi_dict[num] = bi_value # Key to value
+
+  return deci_bi_dict
+
+print(deci_to_bi(16))
