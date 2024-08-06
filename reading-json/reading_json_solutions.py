@@ -44,11 +44,12 @@ cases['data']['cases']
 
 # 2
 
-# I decided to use .keys() earlier so I could find out what the exact keys were
-# There were two main keys, and each of them had "subkeys"
-# However, index-wise, I'm stuck on how to loop through the whole dictionary
+# 'meta' and 'data' are the two main keys
+# 'build_time', 'license', 'version', and 'field_definitions' are subkeys of 'meta'
+# 'date', 'states', 'cases', 'testing', and 'outcomes' are subkeys of 'data'
 
-for i in range(len(cases)):
-  for k, v in cases[i].items():
-    print(f"{k}: {v}")
+for k, v in cases.items(): # Since we're iterating through a dict, append .items()
+  print(k)
+  for j, i in v.items(): # Remember, tuples store two values, so loop through 2 indices
+    print(f"{j}:{i}")
   print('\n')
