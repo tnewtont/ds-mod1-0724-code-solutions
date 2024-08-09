@@ -15,22 +15,32 @@ import tmdbsimple as tmdb
 import requests
 import json
 import pandas as pd
+
+# Do an initial search query so that I can get 'total_pages', which is 10
 tmdb.API_KEY = 'b3ca90af8d6988fd6220149ce6a3235f'
 
+#for :
+# ld = [list of dictionaries]
+# starWars_total.append(ld)
 search = tmdb.Search()
-starWars = search.movie(query = 'Star Wars')
+starWars = search.movie(query = 'Star Wars', page = 1)
 starWars
-
-starWars.keys() # I just wanted to get a better view of the dictionary, so I
-# investigated the keys first
-# The keys are 'page', 'results', 'total_pages', and 'total_results'
 
 """# **#3**"""
 
-starWars_df = pd.DataFrame(data = starWars['results']) # Data Frame
-starWars_df
+starWars_all = []
+for i in range((starWars['total_pages'])) :
+  page_results = tmdb.Search()
+  foo = page_results.movie(query = 'Star Wars', page = i+1)
+  starWars_all += foo['results']
+
+# We will get a list, so we need to convert this list to a dataframe
+
+starWars_all_df = pd.json_normalize(starWars_all)
+starWars_all_df
 
 """# **#4**"""
 
-starWars_popularity = starWars_df.sort_values(by = 'popularity',ascending = False)
+starWars_popularity = starWars_all_df.sort_values(by = 'popularity',ascending = False)
 starWars_popularity
+#.drop, specify axis = 1, if you don't specify, it will drop rows
