@@ -32,6 +32,18 @@ headers = header_row.find_all('th') #table headers
 colnames = [name.text for name in headers]
 colnames
 
+# Make the names in Driver column display more nicely (remove 3-letter abbrev)
+# I'm not sure if the 3-letter abbrev should be still included (i.e. add a space
+# after the last name) or be removed completely. Thus, I wrote a function that
+# removes the 3-letter abbrev using regular expressions.
+
+test_string = "Max VerstappenVER"
+import re
+def make_last_name_nicer(last_name):
+  new_last_name = re.sub(r'[A-Z]+$','',last_name)
+  return new_last_name
+make_last_name_nicer(test_string)
+
 rows = []
 for row in data_rows:
   tds = row.find_all('td')
@@ -39,12 +51,27 @@ for row in data_rows:
   rows.append(tds_data)
 
 drivers = pd.DataFrame(data = rows, columns = colnames)
+# Fix the Driver column using the function written earlier
+drivers['Driver'] = drivers['Driver'].apply(make_last_name_nicer)
 drivers
+
+drivers['Pos'] = drivers['Pos'].astype(int)
+drivers['Pts'] = drivers['Pts'].astype(int)
+
+# After you get a dataframe, use apply function, lambda function
+# Loop through all the rows
+# Map
 
 f1_2022 = drivers.to_csv('f1_2022.csv', index = False)
 
 f1_2022_read = pd.read_csv('f1_2022.csv')
 f1_2022_read
 
+# Changing two columns' data types
+
+f1_2022_read.equals(drivers)
+
 # Using the pd.read_html( ) method
-pd.read_html(url)[0]
+drivers_html = pd.read_html(url)[0]
+drivers_html['Driver'] = drivers_html['Driver'].apply(make_last_name_nicer)
+drivers_html
