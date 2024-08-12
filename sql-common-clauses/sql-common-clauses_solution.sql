@@ -25,7 +25,7 @@ LIMIT 5;
 # then sorted by “resource_type” column in a descending order.
 SELECT id, resource_type
 from resource_type
-ORDER BY 1 DESC, 2
+ORDER BY 1 ASC, 2 DESC
 LIMIT 5;
 
 #Count/distinct
