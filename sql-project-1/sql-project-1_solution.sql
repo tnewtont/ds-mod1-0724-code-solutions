@@ -30,31 +30,19 @@ WHERE customer_id = 1716;
 ALTER TABLE customer_newton
 ADD gender varchar(20);
 
+
 # 5 Then, update the field “gender” with the following records:
+# Set all to M initially
 UPDATE customer_newton
-SET gender = 'M'
-WHERE customer_id = 1701;
+SET gender = 'M';
 
-UPDATE customer_newton
-SET gender = 'F'
-WHERE customer_id = 1707;
-
-UPDATE customer_newton
-SET gender = 'M'
-WHERE customer_id = 1711;
-
+# Correct some to F
 UPDATE customer_newton
 SET gender = 'F'
-WHERE customer_id = 1703;
+WHERE customer_id in (1703, 1707, 1708);
 
-UPDATE customer_newton
-SET gender = 'F'
-WHERE customer_id = 1708;
-
-# I was not sure if you wanted to update gender for Steve
-
-UPDATE customer_newton
-SET gender = 'M'
+#6 The customer, Steve, decides to quit our membership program, so delete his record from the “customer_{your_name}” table.
+DELETE FROM customer_newton
 WHERE customer_id = 1716;
 
 #7 Add a new column called “store” in the table “customer_{your_name}”
@@ -63,7 +51,7 @@ ADD store varchar(20);
 
 #8 Then, delete the column called “store” in the table “customer_{your_name}” because you accidentally added it.
 ALTER TABLE customer_newton
-DROP store;
+DROP COLUMN store;
 
 #9 Use “SELECT” & “FROM” to query the whole table “customer_{your_name}”
 SELECT *
