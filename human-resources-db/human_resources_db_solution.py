@@ -27,14 +27,20 @@ data
 """# **#2 Retrieve EmployeeNumber, Department, Age, Gender, and Attrition for employees in sales department from the Employee table; save that information into a dataframe named ‘sales’.**"""
 
 sales_query = cur.execute("""SELECT EmployeeNumber, Department, Age, Gender, Attrition
-                            FROM employee;
+                            FROM employee
+                            WHERE Department = 'Sales';
                               """)
 
 sales_list = sales_query.fetchall()
 sales_list
 
-sales = pd.DataFrame(data = sales_list)
-sales #1470 rows
+# Getting column names for sales
+sales_columns_query = cur.execute("PRAGMA table_info(sales_table)")
+sales_colnames = [i[1] for i in sales_columns_query.fetchall()]
+sales_colnames
+
+sales = pd.DataFrame(data = sales_list, columns = sales_colnames)
+sales #446 rows
 
 """# **#3 Retrieve EmployeeNumber, EducationField, Age, Gender, and Attrition for employees in the Life Sciences field from the Employee table, save that information into a dataframe named ‘field’.**"""
 
@@ -47,7 +53,12 @@ field_query = cur.execute("""
 field_list = field_query.fetchall()
 field_list
 
-field = pd.DataFrame(data = field_list)
+# Getting column names for field
+field_columns_query = cur.execute("PRAGMA table_info(field_table)")
+field_colnames = [i[1] for i in field_columns_query.fetchall()]
+field_colnames
+
+field = pd.DataFrame(data = field_list, columns = field_colnames)
 field #606 rows
 
 """# **#4 Save the two dataframes as tables in the database, and then join the tables on the primary key.**"""
@@ -71,16 +82,6 @@ conn.commit()
 # Inserting values into field_table
 cur.executemany("INSERT INTO field_table VALUES(?, ?, ?, ?, ?)", field_list)
 conn.commit()
-
-# Getting column names for sales
-sales_columns_query = cur.execute("PRAGMA table_info(sales_table)")
-sales_colnames = [i[1] for i in sales_columns_query.fetchall()]
-sales_colnames
-
-# Getting column names for field
-field_columns_query = cur.execute("PRAGMA table_info(field_table)")
-field_colnames = [i[1] for i in field_columns_query.fetchall()]
-field_colnames
 
 # Joining both sales_table and field_table
 join_left_query = cur.execute("""
@@ -115,6 +116,6 @@ join_data_inner
 join_table_inner = pd.DataFrame(join_data_inner, columns = sales_colnames + field_colnames)
 join_table_inner
 
-join_table_inner_2 = join_table_inner.loc[:,~join_table_inner.columns.duplicated()].copy()
+join_table_inner_2 = join_table_inner.loc[:,~join_table_inner.columns.duplicated()].copy() # Remove duplicate columns
 
 join_table_inner_2
