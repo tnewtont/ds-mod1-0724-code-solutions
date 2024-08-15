@@ -91,9 +91,9 @@ severity_type_unique_df
 """# **#4 Find how many occurrences there are of each fault_severity in the table from #2 using an SQL query.**"""
 
 fault_severity_occ_query = cur.execute("""
-                                    SELECT severity_type, COUNT(severity_type)
+                                    SELECT fault_severity, COUNT(fault_severity)
                                     FROM join_table
-                                    GROUP BY severity_type;
+                                    GROUP BY fault_severity;
                                     """)
 fault_severity_occ = fault_severity_occ_query.fetchall()
 fault_severity_occ_df = pd.DataFrame(data = fault_severity_occ)
