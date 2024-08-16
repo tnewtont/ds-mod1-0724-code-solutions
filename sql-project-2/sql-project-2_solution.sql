@@ -54,7 +54,8 @@ FROM loandb.train;
 SELECT OCCUPATION_TYPE AS occupation_type, COUNT(OCCUPATION_TYPE) AS quantity
 FROM loandb.train
 GROUP BY 1
-HAVING occupation_type IS NOT NULL;
+HAVING occupation_type IS NOT NULL
+ORDER BY 2 DESC;
 
 #5 In the field “DAYS_EMPLOYED”, the maximum value in this field is bad data, can you write a conditional logic to
 #mark these bad data as “bad data”, and other values are “normal data” in a new field called “Flag_for_bad_data”?
@@ -66,7 +67,7 @@ FROM loandb.train;
 
 SELECT DAYS_EMPLOYED,
 	CASE
-		WHEN DAYS_EMPLOYED = 365243 THEN 'bad data'
+		WHEN DAYS_EMPLOYED = (SELECT MAX(DAYS_EMPLOYED) FROM loandb.train) THEN 'bad data'
 		ELSE 'normal data'
 	END Flag_for_bad_data
 FROM loandb.train;
@@ -88,6 +89,13 @@ SELECT TARGET, DAYS_INSTALMENT, DAYS_ENTRY_PAYMENT
 FROM loandb.installments_payments AS ip INNER JOIN loandb.credit_card_balance AS ccb ON ip.SK_ID_PREV = ccb.SK_ID_PREV
 				INNER JOIN loandb.previous_application AS pa ON ccb.SK_ID_PREV = pa.SK_ID_PREV				
 				INNER JOIN loandb.train AS t ON pa.SK_ID_CURR = t.SK_ID_CURR;
+			
+CREATE TEMPORARY TABLE dsstudent.bigmerge
+SELECT t.TARGET, ip.DAYS_INSTALMENT, ip.DAYS_ENTRY_PAYMENT
+FROM loandb.installments_payments AS ip INNER JOIN loandb.credit_card_balance AS ccb ON ip.SK_ID_PREV = ccb.SK_ID_PREV
+				INNER JOIN loandb.previous_application AS pa ON ccb.SK_ID_PREV = pa.SK_ID_PREV				
+				INNER JOIN loandb.train AS t ON pa.SK_ID_CURR = t.SK_ID_CURR;
+			
 			
 							
 SELECT TARGET, MIN(DAYS_INSTALMENT) AS min_day_installment, MAX(DAYS_INSTALMENT) AS max_day_installment, MIN(DAYS_ENTRY_PAYMENT) AS min_days_entry_payment, MAX(DAYS_ENTRY_PAYMENT) AS max_days_entry_payment
