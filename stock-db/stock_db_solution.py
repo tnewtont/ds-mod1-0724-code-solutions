@@ -65,9 +65,13 @@ aapl_table_list
 
 """# **#2 Read the two new new tables in from the database using SQL to check if they were successfully created.**"""
 
-msft_table_list
+msft_table_test_query = cur.execute("SELECT * FROM msft_table;")
+msft_table_test = msft_table_test_query.fetchall()
+msft_table_test
 
-aapl_table_list
+aapl_table_test_query = cur.execute("SELECT * FROM aapl_table")
+aapl_table_test = aapl_table_test_query.fetchall()
+aapl_table_test
 
 """# **#3 For each new table in the database, query for the Maximum and Minimum dates, and save those as new pandas data frames.**"""
 
@@ -85,17 +89,63 @@ msft_max_min_query = cur.execute("""
 msft_max_min_list = msft_max_min_query.fetchall()
 msft_max_min_list # max_date is '2014-07-21' and min_date is '2000-01-03'
 
-msft_max_min_df = pd.DataFrame(data = msft_max_min_list)
-msft_max_min_df
-
-msft_max_min_table_query = cur.execute("""
+# Obtaining column names of msft_table
+msft_table_cols = pd.read_sql("""
                             SELECT *
                             FROM msft_table
-                            WHERE Date = '2014-07-21' OR Date = '2000-01-03';
+                            ORDER BY Date;
+                            """, conn)
+msft_table_cols.columns
+
+msft_max_min_df = pd.DataFrame(data = msft_max_min_list, columns = ['max_date', 'min_date'])
+msft_max_min_df
+
+# Use ORDER BY for minimum date
+msft_min_table_query = cur.execute("""
+                            SELECT *
+                            FROM msft_table
+                            WHERE Date IS NOT NULL
+                            ORDER BY DATE ASC
+                            LIMIT 1;
                             """)
-msft_max_min_table_list = msft_max_min_table_query.fetchall()
-msft_max_min_table_df = pd.DataFrame(data = msft_max_min_table_list)
-msft_max_min_table_df
+msft_min_table_list = msft_min_table_query.fetchall()
+msft_min_table_df = pd.DataFrame(data = msft_min_table_list, columns = msft_table_cols.columns)
+msft_min_table_df
+
+# = (SELECT MAX(DATE) FROM msft_table) #
+# WHERE DATE = (MIN MAX STATEMETN)
+
+# Use ORDER BY for maximum date
+msft_max_table_query = cur.execute("""
+                            SELECT *
+                            FROM msft_table
+                            WHERE Date IS NOT NULL
+                            ORDER BY DATE DESC
+                            LIMIT 1;
+                            """)
+msft_max_table_list = msft_max_table_query.fetchall()
+msft_max_table_df = pd.DataFrame(data = msft_max_table_list, columns = msft_table_cols.columns)
+msft_max_table_df
+
+# Use a nested SELECT-FROM statement for minimum date
+msft_min_table_query2 = cur.execute("""
+                            SELECT *
+                            FROM msft_table
+                            WHERE Date = (SELECT MIN(Date) FROM msft_table)
+                            """)
+msft_min_table_list2 = msft_min_table_query2.fetchall()
+msft_min_table_df2 = pd.DataFrame(data = msft_min_table_list2, columns = msft_table_cols.columns)
+msft_min_table_df2
+
+# Use a nested SELECT-FROM statement for maximum date
+msft_max_table_query2 = cur.execute("""
+                            SELECT *
+                            FROM msft_table
+                            WHERE Date = (SELECT MAX(Date) FROM msft_table)
+                            """)
+msft_max_table_list2 = msft_max_table_query2.fetchall()
+msft_max_table_df2 = pd.DataFrame(data = msft_max_table_list2, columns = msft_table_cols.columns)
+msft_max_table_df2
 
 # aapl_table max and min dates
 aapl_max_min_query = cur.execute("""
@@ -105,17 +155,60 @@ aapl_max_min_query = cur.execute("""
 aapl_max_min_list = aapl_max_min_query.fetchall()
 aapl_max_min_list # max_date is '2014-07-21' and min_date is '2000-01-03'
 
-aapl_max_min_df = pd.DataFrame(data = aapl_max_min_list)
+aapl_max_min_df = pd.DataFrame(data = aapl_max_min_list, columns = ['max_date', 'min_date'])
 aapl_max_min_df
 
-aapl_max_min_table_query = cur.execute("""
+# Obtaining column names for aapl_table
+aapl_table_cols = pd.read_sql("""
+                            SELECT *
+                            FROM aapl_table
+                            ORDER BY Date;
+                            """, conn)
+aapl_table_cols.columns
+
+# Use ORDER BY for minimum date
+aapl_min_table_query = cur.execute("""
                                         SELECT *
                                         FROM aapl_table
-                                        WHERE Date = '2014-07-21' OR Date = '2000-01-03';
+                                        WHERE Date IS NOT NULL
+                                        ORDER BY DATE ASC
+                                        LIMIT 1;
                                         """)
-aapl_max_min_table_list = aapl_max_min_table_query.fetchall()
-aapl_max_min_table_df = pd.DataFrame(data = aapl_max_min_table_list)
-aapl_max_min_table_df
+aapl_min_table_list = aapl_min_table_query.fetchall()
+aapl_min_table_df = pd.DataFrame(data = aapl_min_table_list, columns = aapl_table_cols.columns)
+aapl_min_table_df
+
+# Use ORDER BY for maximum date
+aapl_max_table_query = cur.execute("""
+                                        SELECT *
+                                        FROM aapl_table
+                                        WHERE Date IS NOT NULL
+                                        ORDER BY DATE DESC
+                                        LIMIT 1;
+                                        """)
+aapl_max_table_list = aapl_max_table_query.fetchall()
+aapl_max_table_df = pd.DataFrame(data = aapl_max_table_list, columns = aapl_table_cols.columns)
+aapl_max_table_df
+
+# Use a nested SELECT-FROM statement for minimum date
+aapl_min_table_query2 = cur.execute("""
+                            SELECT *
+                            FROM aapl_table
+                            WHERE Date = (SELECT MIN(Date) FROM aapl_table)
+                            """)
+aapl_min_table_list2 = aapl_min_table_query2.fetchall()
+aapl_min_table_df2 = pd.DataFrame(data = aapl_min_table_list2, columns = aapl_table_cols.columns)
+aapl_min_table_df2
+
+# Use a nested SELECT-FROM statement for maximum date
+aapl_max_table_query2 = cur.execute("""
+                            SELECT *
+                            FROM aapl_table
+                            WHERE Date = (SELECT MAX(Date) FROM aapl_table)
+                            """)
+aapl_max_table_list2 = aapl_max_table_query2.fetchall()
+aapl_max_table_df2 = pd.DataFrame(data = aapl_max_table_list2, columns = aapl_table_cols.columns)
+aapl_max_table_df2
 
 """# **#4 For each new table in the database, query for values greater than 50 in the Open feature, and save those as new pandas data frames.**"""
 
@@ -126,7 +219,7 @@ msft_50_query = cur.execute("""
                             WHERE Open > 50;
                             """)
 msft_50_query_list = msft_50_query.fetchall()
-msft_50_df = pd.DataFrame(data = msft_50_query_list)
+msft_50_df = pd.DataFrame(data = msft_50_query_list, columns = msft_table_cols.columns)
 msft_50_df
 
 # For aapl_table
@@ -136,5 +229,5 @@ aapl_50_query = cur.execute("""
                             WHERE Open > 50;
                             """)
 aapl_50_query_list = aapl_50_query.fetchall()
-aapl_50_df = pd.DataFrame(data = aapl_50_query_list)
+aapl_50_df = pd.DataFrame(data = aapl_50_query_list, columns = aapl_table_cols.columns)
 aapl_50_df
