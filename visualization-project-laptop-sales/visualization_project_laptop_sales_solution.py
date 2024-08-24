@@ -21,24 +21,20 @@ sales
 total_profit = sales.groupby('Contact Sex')['Profit'].sum()
 total_profit
 
-"""1. The target marget seems to be males since their total profit of 2936.53 is higher than of females, which is 2522.48."""
+"""1. The target marget seems to be males since their total profit of 2936.53 is higher than of females, which is 2522.48.
 
-# Example, sale price of $500, your cost is $300, and the shipping is $10.
-# Case 1: You pass the shipping cost to the customer, so
-# profit = (500 + 10) - $300 = 210
-# Case 2: As the business, you take in the shipping cost
-# profit = 500 - (300 + 10) = 190
+# **#2 If business is cash-constrained, which gender should be targeted?**
+"""
 
-"""# **#2 If business is cash-constrained, which gender should be targeted?**"""
+# Profits by gender
+profit_gender = sales.groupby('Contact Sex')['Profit'].sum()
 
 # Let's see what happens if the business takes on the shipping cost
 sales['Our Cost Plus Shipping'] = sales['Our Cost'] + sales['Shipping Cost']
-business_cost2 = sales.groupby('Contact Sex')['Our Cost Plus Shipping'].sum()
+business_cost = sales.groupby('Contact Sex')['Our Cost Plus Shipping'].sum()
 
-profits2 = sales.groupby('Contact Sex')['Profit With Our Increased Cost'].sum()
-
-profits_percentage1 = profits2/ business_cost2
-profits_percentage1.rename('Profit Percentage', inplace = True)
+total_profit_percentage1 = profit_gender / business_cost
+total_profit_percentage1.rename('Profit Percentage', inplace = True)
 
 """2. If the business is cash-constrained, they should target males.
 
@@ -46,17 +42,13 @@ profits_percentage1.rename('Profit Percentage', inplace = True)
 """
 
 # Let's see what happens if the the customer takes on the shipping cost
+
 sales['Sale Price Plus Shipping'] = sales['Sale Price'] + sales['Shipping Cost']
-consumer_cost2 = sales.groupby('Contact Sex')['Sale Price Plus Shipping'].sum()
+consumer_cost = sales.groupby('Contact Sex')['Sale Price Plus Shipping'].sum()
 
 # Now consider the profit percentage given customers take on the shipping cost
-# This gives the profit percentage per specific customer
-sales['Profit With Their Increased Cost'] = sales['Sale Price Plus Shipping'] - sales['Our Cost']
-
-profits3 = sales.groupby('Contact Sex')['Profit With Their Increased Cost'].sum()
-
-profits_percentage2 = profits3 / consumer_cost2
-profits_percentage2.rename('Profit Percentage', inplace = True)
+total_profit_percentage2 = profit_gender / consumer_cost
+total_profit_percentage2.rename('Profit Percentage', inplace = True)
 
 """3. If the consumer is cash-constrained, males should be targeted.
 
