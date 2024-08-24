@@ -34,14 +34,11 @@ total_profit
 # Let's see what happens if the business takes on the shipping cost
 sales['Our Cost Plus Shipping'] = sales['Our Cost'] + sales['Shipping Cost']
 business_cost2 = sales.groupby('Contact Sex')['Our Cost Plus Shipping'].sum()
-business_cost2
 
-# Consider the profit percentage given the business takes on the shipping cost
-sales['Profit With Our Increased Cost'] = sales['Sale Price'] - sales['Our Cost Plus Shipping']
-sales['Our Profit Percentage With Our Increased Cost'] = (sales['Profit With Our Increased Cost'] / sales['Our Cost Plus Shipping']) * 100
-sales['Our Profit Percentage With Our Increased Cost']
+profits2 = sales.groupby('Contact Sex')['Profit With Our Increased Cost'].sum()
 
-sales.groupby('Contact Sex')['Our Profit Percentage With Our Increased Cost'].mean()
+profits_percentage1 = profits2/ business_cost2
+profits_percentage1.rename('Profit Percentage', inplace = True)
 
 """2. If the business is cash-constrained, they should target males.
 
@@ -51,28 +48,15 @@ sales.groupby('Contact Sex')['Our Profit Percentage With Our Increased Cost'].me
 # Let's see what happens if the the customer takes on the shipping cost
 sales['Sale Price Plus Shipping'] = sales['Sale Price'] + sales['Shipping Cost']
 consumer_cost2 = sales.groupby('Contact Sex')['Sale Price Plus Shipping'].sum()
-consumer_cost2
 
 # Now consider the profit percentage given customers take on the shipping cost
 # This gives the profit percentage per specific customer
 sales['Profit With Their Increased Cost'] = sales['Sale Price Plus Shipping'] - sales['Our Cost']
-sales['Our Profit Percentage With Their Increased Cost'] = (sales['Profit With Their Increased Cost'] / sales['Our Cost']) * 100
-sales['Our Profit Percentage With Their Increased Cost']
 
-# Net profit, grouped by sex
-net_profit2 = sales.groupby('Contact Sex')['Profit With Their Increased Cost'].sum()
-net_profit2
+profits3 = sales.groupby('Contact Sex')['Profit With Their Increased Cost'].sum()
 
-# Net cost, grouped by sex
-net_cost2 = sales.groupby('Contact Sex')['Our Cost'].sum()
-net_cost2
-
-profit_percentage2 = net_profit2 / net_cost2
-profit_percentage2.rename('Profit Percentage', inplace = True)
-
-# Net profit percentage for all customers male and female
-total_profit_percentage1 = (sales['Profit With Their Increased Cost'].sum() / sales['Our Cost'].sum()) * 100
-total_profit_percentage1
+profits_percentage2 = profits3 / consumer_cost2
+profits_percentage2.rename('Profit Percentage', inplace = True)
 
 """3. If the consumer is cash-constrained, males should be targeted.
 
@@ -120,7 +104,7 @@ profit_by_leadsource
 
 # Consider profit grouped by lead source and then sale month
 
-profits_grouped = sales.groupby(['Lead Source', 'Sale Month'])['Profit'].sum()
-profits_grouped
+emails_profits = sales[(sales['Lead Source'] == 'Email')].groupby('Sale Month')['Profit'].sum()
+emails_profits
 
 """7. When looking at profits for each month where the lead source is Email, the company should consider increasing its marketing during November."""
