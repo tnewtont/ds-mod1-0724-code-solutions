@@ -32,12 +32,12 @@ def create_month(df: pd.DataFrame, feature: str, name: str) -> pd.DataFrame:
         pd.DataFrame: The DataFrame including the "month" feature.
     """
 
-    df1 = df.copy()
-    df1[feature] = pd.to_datetime(df[feature], format = "'%Y-%m-%dT%H:%M:%S'")
+    #df1 = df.copy()
+    #df1[feature] = pd.to_datetime(df[feature], format = "'%Y-%m-%dT%H:%M:%S'")
 
-    df1[name] = df1[feature].dt.month
+    df[name] = df[feature].dt.month
 
-    return df1
+    return df
 
 def aggregate_months(df: pd.DataFrame, group: str, agg_func: str) -> pd.DataFrame:
     """
@@ -54,9 +54,9 @@ def aggregate_months(df: pd.DataFrame, group: str, agg_func: str) -> pd.DataFram
 
     df1 = df.copy()
 
-    df1['Timestamp'] = pd.to_datetime(df['Timestamp'], format = "'%Y-%m-%dT%H:%M:%S'")
+    #df1['Timestamp'] = pd.to_datetime(df['Timestamp'], format = "'%Y-%m-%dT%H:%M:%S'")
 
-    df1[group] = df1['Timestamp'].dt.month
+    #df1[group] = df1['Timestamp'].dt.month
 
     move_group = df1.pop(group)
     df1.insert(0, group, move_group)

@@ -16,7 +16,7 @@ def discretize_feature(df: pd.DataFrame, feature: str) -> pd.DataFrame:
     """
 
     df1 = df.copy()
-    df1[feature] = np.round(df1[feature]) 
+    df1[feature] = (np.round(df1[feature])).astype(int)
     return df1
 
 
