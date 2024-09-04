@@ -53,7 +53,7 @@ def evaluate_model(y_true, y_pred):
     mae = (1 / n)*sum(abs(y_pred - y_true))
 
     # Calculate r-squared
-    r2 = sum((y_true - y_pred)**2)/sum((y_true - y_bar)**2)
+    r2 = 1 - (sum((y_true - y_pred)**2)/sum((y_true - y_bar)**2))
 
     # return the mse, mae, and r2 values
     return mse, mae, r2
@@ -353,7 +353,7 @@ def build_lasso_model(X_train, y_train, alpha):
     
     # Create Lasso object and fit model
     lasso = Lasso(alpha = alpha)
-    model = lasso.fit(X_train, y_train)
+    model = lasso.fit(xtrain, ytrain)
 
     # Set number of observations (n) and number of non-zero parameters (p)
     n = len(xval)
